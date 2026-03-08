@@ -78,7 +78,7 @@ const LandingPage: React.FC = () => {
       {/* Hero */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
         {/* Dither Background */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0" style={{ zIndex: 0 }}>
           <Suspense fallback={<div className="absolute inset-0 bg-background" />}>
             <Dither
               waveSpeed={0.03}
@@ -94,7 +94,7 @@ const LandingPage: React.FC = () => {
           </Suspense>
         </div>
         {/* Content overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background pointer-events-none" style={{ zIndex: 1 }} />
         <div className="relative z-10 max-w-6xl mx-auto px-4 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
