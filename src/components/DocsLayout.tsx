@@ -59,7 +59,6 @@ const DocsLayout: React.FC = () => {
               <Outlet key={location.pathname} />
               <DocsPrevNext />
             </div>
-            </div>
             <TableOfContents key={location.pathname} />
           </div>
         </main>
