@@ -90,7 +90,7 @@ const DocSidebar: React.FC<DocSidebarProps> = ({ isOpen, onToggle }) => {
       )}
       <aside
         className={cn(
-          "fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-60 border-r bg-sidebar overflow-y-auto transition-transform duration-200 lg:translate-x-0 lg:static lg:shrink-0",
+          "fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-60 border-r bg-sidebar overflow-y-auto transition-transform duration-200 lg:sticky lg:top-14 lg:translate-x-0 lg:shrink-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >

@@ -7,9 +7,12 @@ interface TocItem {
   level: number;
 }
 
+const areSameIds = (a: string[], b: string[]) =>
+  a.length === b.length && a.every((id, index) => id === b[index]);
+
 const TableOfContents: React.FC = () => {
   const [headings, setHeadings] = useState<TocItem[]>([]);
-  const [activeId, setActiveId] = useState("");
+  const [activeIds, setActiveIds] = useState<string[]>([]);
 
   useEffect(() => {
     const collectHeadings = () => {
@@ -18,10 +21,18 @@ const TableOfContents: React.FC = () => {
 
       const elements = prose.querySelectorAll("h2, h3");
       const items: TocItem[] = [];
+      const idCounts = new Map<string, number>();
 
-      elements.forEach((el) => {
-        const text = el.textContent || "";
-        const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      elements.forEach((el, index) => {
+        const text = el.textContent?.trim() || "";
+        const baseId =
+          text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") ||
+          `section-${index + 1}`;
+
+        const count = idCounts.get(baseId) ?? 0;
+        idCounts.set(baseId, count + 1);
+        const id = count === 0 ? baseId : `${baseId}-${count + 1}`;
+
         el.id = id;
         items.push({
           id,
@@ -33,32 +44,73 @@ const TableOfContents: React.FC = () => {
       setHeadings(items);
     };
 
-    // Small delay to let page render
-    const timer = setTimeout(collectHeadings, 100);
+    const timer = setTimeout(collectHeadings, 80);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     if (headings.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-            break;
-          }
-        }
-      },
-      { rootMargin: "-80px 0px -60% 0px", threshold: 0.1 }
-    );
+    const headingElements = headings
+      .map(({ id }) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
 
-    headings.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
+    const topOffset = 110;
+    const closeRange = 90;
+    const maxActive = 3;
+    let frameId = 0;
 
-    return () => observer.disconnect();
+    const setIfChanged = (nextIds: string[]) => {
+      setActiveIds((prev) => (areSameIds(prev, nextIds) ? prev : nextIds));
+    };
+
+    const updateActive = () => {
+      const positions = headingElements.map((el) => {
+        const rect = el.getBoundingClientRect();
+        return { id: el.id, top: rect.top, bottom: rect.bottom };
+      });
+
+      const nearby = positions
+        .filter(({ top, bottom }) => bottom > 0 && top <= topOffset + closeRange && top >= topOffset - closeRange)
+        .sort((a, b) => Math.abs(a.top - topOffset) - Math.abs(b.top - topOffset))
+        .slice(0, maxActive)
+        .map(({ id }) => id);
+
+      if (nearby.length > 0) {
+        setIfChanged(nearby);
+        return;
+      }
+
+      const latestAbove = [...positions]
+        .filter(({ top }) => top <= topOffset)
+        .sort((a, b) => b.top - a.top)[0];
+
+      if (latestAbove) {
+        setIfChanged([latestAbove.id]);
+        return;
+      }
+
+      const nextHeading = positions.find(({ top }) => top > topOffset);
+      setIfChanged(nextHeading ? [nextHeading.id] : []);
+    };
+
+    const onScroll = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(() => {
+        updateActive();
+        frameId = 0;
+      });
+    };
+
+    updateActive();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [headings]);
 
   if (headings.length === 0) return null;
@@ -69,27 +121,29 @@ const TableOfContents: React.FC = () => {
         On this page
       </p>
       <ul className="space-y-1 border-l">
-        {headings.map((h) => (
-          <li key={h.id}>
-            <a
-              href={`#${h.id}`}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById(h.id)?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className={cn(
-                "block text-[13px] py-0.5 transition-colors border-l -ml-px",
-                h.level === 3 ? "pl-6" : "pl-3",
-                activeId === h.id
-                  ? "border-accent text-foreground font-medium"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-              style={activeId === h.id ? { borderColor: "hsl(var(--accent))" } : {}}
-            >
-              {h.text}
-            </a>
-          </li>
-        ))}
+        {headings.map((h) => {
+          const isActive = activeIds.includes(h.id);
+          return (
+            <li key={h.id}>
+              <a
+                href={`#${h.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById(h.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                className={cn(
+                  "block text-[13px] py-0.5 transition-colors border-l -ml-px",
+                  h.level === 3 ? "pl-6" : "pl-3",
+                  isActive
+                    ? "border-accent text-foreground font-medium"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {h.text}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );
