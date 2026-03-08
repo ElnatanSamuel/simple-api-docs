@@ -162,6 +162,15 @@
   .token-function { color: hsl(var(--code-function)); }
   .token-number { color: hsl(var(--code-number)); }
   .token-property { color: hsl(var(--code-property)); }
+  .token-line-number { color: hsl(var(--code-comment)); opacity: 0.5; }
+  .token-prompt { color: hsl(var(--code-string)); font-weight: 600; }
+
+  .code-terminal .code-header {
+    border-bottom-color: hsl(var(--code-border));
+  }
+  .code-terminal pre {
+    background: hsl(var(--code-bg));
+  }
 
   .doc-prose h1 {
     @apply text-3xl font-bold tracking-tight mb-2;
