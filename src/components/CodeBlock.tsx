@@ -32,7 +32,7 @@ const tokenize = (code: string, language: string) => {
     // Keywords
     const keywords = [
       "const", "let", "var", "function", "return", "import", "from", "export",
-      "default", "if", "else", "for", "while", "class", "new", "async", "await",
+      "default", "if", "else", "for", "while", "new", "async", "await",
       "try", "catch", "type", "interface", "extends", "implements", "enum",
       "npm", "npx", "yarn", "pnpm", "bun", "cd", "mkdir", "install", "add",
     ];
