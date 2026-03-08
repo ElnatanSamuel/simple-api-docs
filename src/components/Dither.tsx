@@ -304,7 +304,7 @@ export default function Dither({
 }: DitherProps) {
   return (
     <Canvas
-      style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+      style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}
       camera={{ position: [0, 0, 6] }}
       dpr={1}
       gl={{ antialias: true, preserveDrawingBuffer: true }}
