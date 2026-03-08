@@ -55,9 +55,6 @@ const TableOfContents: React.FC = () => {
       .map(({ id }) => document.getElementById(id))
       .filter(Boolean) as HTMLElement[];
 
-    const topOffset = 110;
-    const closeRange = 90;
-    const maxActive = 3;
     let frameId = 0;
 
     const setIfChanged = (nextIds: string[]) => {
@@ -65,33 +62,32 @@ const TableOfContents: React.FC = () => {
     };
 
     const updateActive = () => {
-      const positions = headingElements.map((el) => {
-        const rect = el.getBoundingClientRect();
-        return { id: el.id, top: rect.top, bottom: rect.bottom };
-      });
+      const viewportHeight = window.innerHeight;
+      const topMargin = 100;
 
-      const nearby = positions
-        .filter(({ top, bottom }) => bottom > 0 && top <= topOffset + closeRange && top >= topOffset - closeRange)
-        .sort((a, b) => Math.abs(a.top - topOffset) - Math.abs(b.top - topOffset))
-        .slice(0, maxActive)
-        .map(({ id }) => id);
+      const visible = headingElements
+        .filter((el) => {
+          const rect = el.getBoundingClientRect();
+          return rect.bottom > topMargin && rect.top < viewportHeight;
+        })
+        .map((el) => el.id);
 
-      if (nearby.length > 0) {
-        setIfChanged(nearby);
+      if (visible.length > 0) {
+        setIfChanged(visible);
         return;
       }
+
+      // Nothing visible — fall back to latest heading scrolled past
+      const positions = headingElements.map((el) => ({
+        id: el.id,
+        top: el.getBoundingClientRect().top,
+      }));
 
       const latestAbove = [...positions]
-        .filter(({ top }) => top <= topOffset)
+        .filter(({ top }) => top <= topMargin)
         .sort((a, b) => b.top - a.top)[0];
 
-      if (latestAbove) {
-        setIfChanged([latestAbove.id]);
-        return;
-      }
-
-      const nextHeading = positions.find(({ top }) => top > topOffset);
-      setIfChanged(nextHeading ? [nextHeading.id] : []);
+      setIfChanged(latestAbove ? [latestAbove.id] : []);
     };
 
     const onScroll = () => {

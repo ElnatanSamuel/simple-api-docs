@@ -54,7 +54,7 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background dark">
+    <div className="dark min-h-screen bg-background">
       {/* Nav - floating glassmorphism */}
       <header className="fixed top-0 left-0 right-0 z-50">
         <div className="max-w-5xl mx-auto mt-4 px-4">
