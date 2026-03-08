@@ -75,8 +75,20 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero */}
-      <section className="relative min-h-[85vh] flex items-center justify-center">
-        <HeroBackground />
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Dither
+            waveSpeed={0.05}
+            waveFrequency={2.8}
+            waveAmplitude={0.32}
+            waveColor={[0.62, 0.62, 0.62]}
+            colorNum={4}
+            pixelSize={2}
+            enableMouseInteraction={false}
+          />
+        </div>
+        <div className="absolute inset-0 bg-background/70" />
+
         <div className="relative z-10 max-w-6xl mx-auto px-4 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -91,7 +103,7 @@ const LandingPage: React.FC = () => {
               <h1 className="font-display text-5xl sm:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
                 The API client
                 <br />
-                <span style={{ color: "hsl(var(--accent))" }}>you deserve.</span>
+                <span className="text-accent">you deserve.</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-md mb-8 leading-relaxed">
                 A production-grade, type-safe API client builder for TypeScript.
