@@ -19,6 +19,7 @@ void main() {
 }
 `;
 
+// WebGL 1 (GLSL ES 1.00) compatible — no array constructors, no dynamic indexing
 const fragmentShader = `
 precision highp float;
 uniform vec2 resolution;
@@ -32,6 +33,7 @@ uniform int enableMouseInteraction;
 uniform float mouseRadius;
 uniform float colorNum;
 uniform float pixelSize;
+uniform sampler2D bayerTex;
 
 vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
 vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
@@ -73,51 +75,11 @@ float pattern(vec2 p){
   return fbm(p+fbm(p2));
 }
 
-float getBayer(int x, int y) {
-  // Encode the 8x8 Bayer matrix using 4x4 blocks via bit math
-  // Bayer(x,y) for 8x8 = bit-reverse interleave of coords
-  int val = 0;
-  // Row-major Bayer via formula
-  int xb = x;
-  int yb = y;
-  // Use the standard Bayer formula
-  int v = 0;
-  // Bit 5
-  v += ((xb / 4) + (yb / 4) * 2) > 0 ? 0 : 0; // placeholder
-  // Actually let's just use a texture-free approach with mod math
-  float m = 0.0;
-  // 2x2
-  float n = mod(float(x), 2.0) + mod(float(y), 2.0) * 2.0;
-  if(n < 0.5) m = 0.0;
-  else if(n < 1.5) m = 2.0;
-  else if(n < 2.5) m = 3.0;
-  else m = 1.0;
-  m = m / 4.0;
-  // 4x4 refinement
-  float n2 = mod(float(x/2), 2.0) + mod(float(y/2), 2.0) * 2.0;
-  float m2 = 0.0;
-  if(n2 < 0.5) m2 = 0.0;
-  else if(n2 < 1.5) m2 = 2.0;
-  else if(n2 < 2.5) m2 = 3.0;
-  else m2 = 1.0;
-  m = m / 4.0 + m2 / 4.0;
-  // 8x8 refinement
-  float n3 = mod(float(x/4), 2.0) + mod(float(y/4), 2.0) * 2.0;
-  float m3 = 0.0;
-  if(n3 < 0.5) m3 = 0.0;
-  else if(n3 < 1.5) m3 = 2.0;
-  else if(n3 < 2.5) m3 = 3.0;
-  else m3 = 1.0;
-  m = m / 4.0 + m3 / 4.0 + m2 / 16.0;
-  // Actually this recursive approach is getting messy. Let me use a simpler approach.
-  return m;
-}
-
 vec3 dither(vec2 uv, vec3 color){
   vec2 sc=floor(uv*resolution/pixelSize);
-  int x=int(mod(sc.x,8.0));
-  int y=int(mod(sc.y,8.0));
-  float threshold=getBayer(x,y)-0.25;
+  // Sample 8x8 Bayer matrix from texture
+  vec2 bayerUV = (mod(sc, 8.0) + 0.5) / 8.0;
+  float threshold = texture2D(bayerTex, bayerUV).r - 0.25;
   float s=1.0/(colorNum-1.0);
   color+=threshold*s;
   float bias=0.2;
@@ -126,11 +88,9 @@ vec3 dither(vec2 uv, vec3 color){
 }
 
 void main(){
-  // Pixelate UV
   vec2 np=pixelSize/resolution;
-  vec2 uv=np*floor(gl_FragCoord.xy/resolution/np);
+  vec2 pixUV=np*floor(gl_FragCoord.xy/resolution/np);
 
-  // Wave pattern
   vec2 wuv=gl_FragCoord.xy/resolution.xy;
   wuv-=0.5;
   wuv.x*=resolution.x/resolution.y;
@@ -148,6 +108,33 @@ void main(){
   gl_FragColor=vec4(col,1.0);
 }
 `;
+
+// Standard 8x8 Bayer matrix values
+const BAYER_8x8 = [
+   0, 48, 12, 60,  3, 51, 15, 63,
+  32, 16, 44, 28, 35, 19, 47, 31,
+   8, 56,  4, 52, 11, 59,  7, 55,
+  40, 24, 36, 20, 43, 27, 39, 23,
+   2, 50, 14, 62,  1, 49, 13, 61,
+  34, 18, 46, 30, 33, 17, 45, 29,
+  10, 58,  6, 54,  9, 57,  5, 53,
+  42, 26, 38, 22, 41, 25, 37, 21,
+];
+
+function createBayerTexture(gl: WebGLRenderingContext) {
+  const data = new Uint8Array(64);
+  for (let i = 0; i < 64; i++) {
+    data[i] = Math.round((BAYER_8x8[i] / 64) * 255);
+  }
+  const tex = gl.createTexture()!;
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 8, 8, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, data);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+  return tex;
+}
 
 function createShader(gl: WebGLRenderingContext, type: number, source: string) {
   const shader = gl.createShader(type)!;
@@ -200,6 +187,13 @@ export default function Dither({
     }
 
     gl.useProgram(program);
+
+    // Bayer texture
+    const bayerTex = createBayerTexture(gl);
+    const uBayerTex = gl.getUniformLocation(program, 'bayerTex');
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, bayerTex);
+    gl.uniform1i(uBayerTex, 0);
 
     // Full-screen quad
     const buffer = gl.createBuffer();
@@ -275,6 +269,7 @@ export default function Dither({
       gl.deleteShader(vs);
       gl.deleteShader(fs);
       gl.deleteBuffer(buffer);
+      gl.deleteTexture(bayerTex);
     };
   }, [disableAnimation]);
 
