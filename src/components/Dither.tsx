@@ -236,7 +236,7 @@ export default function Dither({
       mouseRef.current.y = (e.clientY - rect.top) * dpr;
     };
 
-    canvas.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
 
     const startTime = performance.now();
 
