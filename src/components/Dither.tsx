@@ -100,7 +100,8 @@ void main(){
     vec2 m=(mousePos/resolution-0.5)*vec2(1,-1);
     m.x*=resolution.x/resolution.y;
     float d=length(wuv-m);
-    f-=0.5*(1.0-smoothstep(0.0,mouseRadius,d));
+    float influence=1.0-smoothstep(0.0,mouseRadius,d);
+    f-=0.3*influence*influence;
   }
 
   vec3 col=mix(vec3(0),waveColor,f);

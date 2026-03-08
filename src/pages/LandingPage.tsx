@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Zap, Shield, Layers, Terminal, Copy, Check, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ThemeToggle from "@/components/ThemeToggle";
+
 import CodeBlock from "@/components/CodeBlock";
 import Dither from "@/components/Dither";
 
@@ -72,7 +72,7 @@ const LandingPage: React.FC = () => {
               <a href="https://github.com" target="_blank" rel="noopener noreferrer">
                 <Button variant="ghost" size="sm" className="text-xs h-8">GitHub</Button>
               </a>
-              <ThemeToggle />
+              
             </div>
           </div>
         </div>
