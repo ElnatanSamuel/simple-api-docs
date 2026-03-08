@@ -72,7 +72,7 @@ const LandingPage: React.FC = () => {
               <a href="https://github.com" target="_blank" rel="noopener noreferrer">
                 <Button variant="ghost" size="sm" className="text-xs h-8">GitHub</Button>
               </a>
-              <ThemeToggle />
+              
             </div>
           </div>
         </div>
