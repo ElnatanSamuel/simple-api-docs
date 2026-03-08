@@ -57,6 +57,8 @@ const DocsLayout: React.FC = () => {
           <div className="max-w-6xl mx-auto px-6 py-10 flex gap-10">
             <div className="flex-1 min-w-0 max-w-3xl">
               <Outlet key={location.pathname} />
+              <DocsPrevNext />
+            </div>
             </div>
             <TableOfContents key={location.pathname} />
           </div>
