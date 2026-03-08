@@ -25,15 +25,11 @@ const HeroBackground: React.FC = () => {
 
   return (
     <div ref={ref} className="absolute inset-0 overflow-hidden">
-      {/* Grid */}
       <div className="absolute inset-0 hero-grid" />
-      {/* Mouse-following glow */}
       <div className="absolute inset-0 hero-glow transition-all duration-300" />
-      {/* Floating gradient orbs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full hero-gradient-orb animate-float" style={{ background: "hsl(var(--hero-gradient-1) / 0.3)" }} />
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full hero-gradient-orb animate-pulse-slow" style={{ background: "hsl(var(--hero-gradient-2) / 0.25)", animationDelay: "2s" }} />
       <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full hero-gradient-orb animate-float" style={{ background: "hsl(var(--hero-gradient-3) / 0.2)", animationDelay: "4s" }} />
-      {/* Radial fade at edges */}
       <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(var(--background)) 80%)" }} />
     </div>
   );
@@ -182,7 +178,7 @@ const LandingPage: React.FC = () => {
                 className="rounded-xl border bg-card p-5 hover:border-accent/30 transition-colors group"
               >
                 <div className="h-9 w-9 rounded-lg bg-secondary flex items-center justify-center mb-3 group-hover:bg-accent/10 transition-colors">
-                  <f.icon className="h-4.5 w-4.5 text-foreground group-hover:text-accent transition-colors" />
+                  <f.icon className="h-4 w-4 text-foreground group-hover:text-accent transition-colors" />
                 </div>
                 <h3 className="font-display font-semibold text-sm mb-1">{f.title}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>

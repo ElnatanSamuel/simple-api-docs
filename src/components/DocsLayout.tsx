@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { Menu, Search, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "./ThemeToggle";
 import DocSidebar from "./DocSidebar";
+import TableOfContents from "./TableOfContents";
 
 const DocsLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,8 +53,11 @@ const DocsLayout: React.FC = () => {
       <div className="flex">
         <DocSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
         <main className="flex-1 min-w-0">
-          <div className="max-w-3xl mx-auto px-6 py-10">
-            <Outlet />
+          <div className="max-w-6xl mx-auto px-6 py-10 flex gap-10">
+            <div className="flex-1 min-w-0 max-w-3xl">
+              <Outlet key={location.pathname} />
+            </div>
+            <TableOfContents key={location.pathname} />
           </div>
         </main>
       </div>
