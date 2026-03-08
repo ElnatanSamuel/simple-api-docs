@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Zap, Shield, Layers, Terminal } from "lucide-react";
+import { ArrowRight, Zap, Shield, Layers, Terminal, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
-import CodeBlock from "@/components/CodeBlock";
 import Dither from "@/components/Dither";
 
 const features = [
@@ -30,107 +29,131 @@ const features = [
   },
 ];
 
-const heroCode = `import { createApi } from "@simple-api/core";
+const NpmInstallBlock: React.FC = () => {
+  const [copied, setCopied] = useState(false);
+  const cmd = "npm i @simple-api/core";
 
-const api = createApi({
-  baseUrl: "https://api.example.com",
-  services: {
-    users: {
-      get:  { method: "GET",  path: "/users/:id" },
-      list: { method: "GET",  path: "/users" },
-    },
-    auth: {
-      login: { method: "POST", path: "/auth/login" },
-    },
-  },
-});
+  const handleCopy = () => {
+    navigator.clipboard.writeText(cmd);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
-// Fully typed, fully inferred
-const user = await api.users.get({
-  params: { id: "123" },
-});`;
+  return (
+    <div className="flex items-center gap-3 px-5 py-3 rounded-xl border bg-card/60 backdrop-blur-md font-mono text-sm w-fit">
+      <Terminal className="h-4 w-4 text-muted-foreground shrink-0" />
+      <span className="text-foreground">{cmd}</span>
+      <button
+        onClick={handleCopy}
+        className="ml-2 text-muted-foreground hover:text-foreground transition-colors"
+        aria-label="Copy command"
+      >
+        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+};
 
 const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Nav */}
-      <header className="sticky top-0 z-50 border-b bg-background/60 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto flex items-center justify-between h-14 px-4">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-mono font-bold text-xs">S</span>
-            </div>
-            <span className="font-display font-bold text-lg">simple-api</span>
-          </Link>
-          <div className="flex items-center gap-1">
-            <Link to="/docs">
-              <Button variant="ghost" size="sm">Docs</Button>
+      {/* Nav - floating glassmorphism */}
+      <header className="fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-5xl mx-auto mt-4 px-4">
+          <div className="flex items-center justify-between h-12 px-5 rounded-2xl border bg-card/40 backdrop-blur-xl">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center">
+                <span className="text-primary-foreground font-mono font-bold text-[10px]">S</span>
+              </div>
+              <span className="font-display font-bold text-sm">simple-api</span>
             </Link>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-              <Button variant="ghost" size="sm">GitHub</Button>
-            </a>
-            <ThemeToggle />
+            <div className="flex items-center gap-1">
+              <Link to="/docs">
+                <Button variant="ghost" size="sm" className="text-xs h-8">Docs</Button>
+              </Link>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <Button variant="ghost" size="sm" className="text-xs h-8">GitHub</Button>
+              </a>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+      {/* Hero — full-screen dither bg like React Bits */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Dither
             waveSpeed={0.05}
-            waveFrequency={2.8}
-            waveAmplitude={0.32}
-            waveColor={[0.62, 0.62, 0.62]}
+            waveFrequency={3}
+            waveAmplitude={0.3}
+            waveColor={[0.5, 0.5, 0.5]}
             colorNum={4}
             pixelSize={2}
-            enableMouseInteraction={false}
+            enableMouseInteraction={true}
+            mouseRadius={1}
           />
         </div>
-        <div className="absolute inset-0 bg-background/70" />
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-            >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-card/50 backdrop-blur-sm text-xs font-medium text-muted-foreground mb-6">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-                v2.0 — Now with Svelte & React Native support
-              </div>
-              <h1 className="font-display text-5xl sm:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
-                The API client
-                <br />
-                <span className="text-accent">you deserve.</span>
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-md mb-8 leading-relaxed">
-                A production-grade, type-safe API client builder for TypeScript.
-                Structured, resilient, and framework-agnostic.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Link to="/docs">
-                  <Button size="lg" className="gap-2 font-medium">
-                    Get Started <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-card/50 backdrop-blur-sm font-mono text-sm text-muted-foreground">
-                  <Terminal className="h-4 w-4" />
-                  npm i @simple-api/core
-                </div>
-              </div>
-            </motion.div>
+        <div className="relative z-10 text-center px-4 max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-card/40 backdrop-blur-md text-xs font-medium text-muted-foreground mb-8">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+              v2.0 — Now with Svelte & React Native support
+            </div>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="hidden lg:block"
-            >
-              <CodeBlock language="typescript" filename="api.ts" code={heroCode} />
-            </motion.div>
-          </div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+            className="font-display text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05] mb-6 text-foreground"
+          >
+            The API client
+            <br />
+            you deserve.
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+            className="text-lg text-muted-foreground max-w-lg mx-auto mb-10 leading-relaxed"
+          >
+            A production-grade, type-safe API client builder for TypeScript.
+            Structured, resilient, and framework-agnostic.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+            className="flex flex-wrap gap-4 justify-center mb-8"
+          >
+            <Link to="/docs">
+              <Button size="lg" className="gap-2 font-medium rounded-full px-8">
+                Get Started <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link to="/docs">
+              <Button size="lg" variant="outline" className="font-medium rounded-full px-8 bg-card/40 backdrop-blur-md">
+                Learn More
+              </Button>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+            className="flex justify-center"
+          >
+            <NpmInstallBlock />
+          </motion.div>
         </div>
       </section>
 
