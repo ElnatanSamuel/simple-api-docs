@@ -95,7 +95,7 @@ const LandingPage: React.FC = () => {
         </div>
         {/* Content overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background pointer-events-none" style={{ zIndex: 1 }} />
-        <div className="relative z-10 max-w-6xl mx-auto px-4 py-20">
+        <div className="relative max-w-6xl mx-auto px-4 py-20" style={{ zIndex: 2 }}>
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
