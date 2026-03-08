@@ -13,13 +13,21 @@ const escapeHtml = (str: string) =>
 const tokenize = (code: string, language: string) => {
   const lines = code.split("\n");
   return lines.map((rawLine) => {
+    // Store strings and comments separately to avoid highlighting inside them
+    const placeholders: string[] = [];
     let line = escapeHtml(rawLine);
 
-    // Comments (must come first)
-    line = line.replace(/(\/\/.*$)/gm, '<span class="token-comment">$1</span>');
+    // Extract comments first
+    line = line.replace(/(\/\/.*)$/gm, (m) => {
+      placeholders.push(`<span class="token-comment">${m}</span>`);
+      return `__PH${placeholders.length - 1}__`;
+    });
 
-    // Strings (double, single, backtick)
-    line = line.replace(/(&quot;.*?&quot;|".*?"|'.*?'|`.*?`)/g, '<span class="token-string">$1</span>');
+    // Extract strings
+    line = line.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/g, (m) => {
+      placeholders.push(`<span class="token-string">${m}</span>`);
+      return `__PH${placeholders.length - 1}__`;
+    });
 
     // Keywords
     const keywords = [
@@ -29,15 +37,15 @@ const tokenize = (code: string, language: string) => {
       "npm", "npx", "yarn", "pnpm", "bun", "cd", "mkdir", "install", "add",
     ];
     keywords.forEach((kw) => {
-      const regex = new RegExp(`(?<![\\w-])\\b(${kw})\\b`, "g");
+      const regex = new RegExp(`(?<![\\w-])\\b(${kw})\\b(?!__)`, "g");
       line = line.replace(regex, '<span class="token-keyword">$1</span>');
     });
 
     // Numbers
     line = line.replace(/\b(\d+\.?\d*)\b/g, '<span class="token-number">$1</span>');
 
-    // Properties (word before colon)
-    line = line.replace(/(\w+)(?=\s*:)/g, '<span class="token-property">$1</span>');
+    // Restore placeholders
+    line = line.replace(/__PH(\d+)__/g, (_, i) => placeholders[Number(i)]);
 
     return line;
   });
