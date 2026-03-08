@@ -1,0 +1,257 @@
+import React, { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowRight, Zap, Shield, Layers, Terminal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
+import CodeBlock from "@/components/CodeBlock";
+
+const HeroBackground: React.FC = () => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const handleMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      el.style.setProperty("--mouse-x", `${x}%`);
+      el.style.setProperty("--mouse-y", `${y}%`);
+    };
+    el.addEventListener("mousemove", handleMove);
+    return () => el.removeEventListener("mousemove", handleMove);
+  }, []);
+
+  return (
+    <div ref={ref} className="absolute inset-0 overflow-hidden">
+      {/* Grid */}
+      <div className="absolute inset-0 hero-grid" />
+      {/* Mouse-following glow */}
+      <div className="absolute inset-0 hero-glow transition-all duration-300" />
+      {/* Floating gradient orbs */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full hero-gradient-orb animate-float" style={{ background: "hsl(var(--hero-gradient-1) / 0.3)" }} />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full hero-gradient-orb animate-pulse-slow" style={{ background: "hsl(var(--hero-gradient-2) / 0.25)", animationDelay: "2s" }} />
+      <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full hero-gradient-orb animate-float" style={{ background: "hsl(var(--hero-gradient-3) / 0.2)", animationDelay: "4s" }} />
+      {/* Radial fade at edges */}
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(var(--background)) 80%)" }} />
+    </div>
+  );
+};
+
+const features = [
+  {
+    icon: Zap,
+    title: "Extreme Type Safety",
+    desc: "End-to-end TypeScript inference. No manual casting, ever.",
+  },
+  {
+    icon: Layers,
+    title: "Tiered Middleware",
+    desc: "Inject logic at global, service, or endpoint level.",
+  },
+  {
+    icon: Shield,
+    title: "Built-in Resilience",
+    desc: "Retries, deduplication, and structured error handling.",
+  },
+  {
+    icon: Terminal,
+    title: "Framework Agnostic",
+    desc: "Zero-dependency core. React, Svelte, and RN adapters.",
+  },
+];
+
+const heroCode = `import { createApi } from "@simple-api/core";
+
+const api = createApi({
+  baseUrl: "https://api.example.com",
+  services: {
+    users: {
+      get:  { method: "GET",  path: "/users/:id" },
+      list: { method: "GET",  path: "/users" },
+    },
+    auth: {
+      login: { method: "POST", path: "/auth/login" },
+    },
+  },
+});
+
+// Fully typed, fully inferred
+const user = await api.users.get({
+  params: { id: "123" },
+});`;
+
+const LandingPage: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Nav */}
+      <header className="sticky top-0 z-50 border-b bg-background/60 backdrop-blur-xl">
+        <div className="max-w-6xl mx-auto flex items-center justify-between h-14 px-4">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-mono font-bold text-xs">S</span>
+            </div>
+            <span className="font-display font-bold text-lg">simple-api</span>
+          </Link>
+          <div className="flex items-center gap-1">
+            <Link to="/docs">
+              <Button variant="ghost" size="sm">Docs</Button>
+            </Link>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <Button variant="ghost" size="sm">GitHub</Button>
+            </a>
+            <ThemeToggle />
+          </div>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="relative min-h-[85vh] flex items-center justify-center">
+        <HeroBackground />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-card/50 backdrop-blur-sm text-xs font-medium text-muted-foreground mb-6">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+                v2.0 — Now with Svelte & React Native support
+              </div>
+              <h1 className="font-display text-5xl sm:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
+                The API client
+                <br />
+                <span style={{ color: "hsl(var(--accent))" }}>you deserve.</span>
+              </h1>
+              <p className="text-lg text-muted-foreground max-w-md mb-8 leading-relaxed">
+                A production-grade, type-safe API client builder for TypeScript.
+                Structured, resilient, and framework-agnostic.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link to="/docs">
+                  <Button size="lg" className="gap-2 font-medium">
+                    Get Started <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-card/50 backdrop-blur-sm font-mono text-sm text-muted-foreground">
+                  <Terminal className="h-4 w-4" />
+                  npm i @simple-api/core
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+              className="hidden lg:block"
+            >
+              <CodeBlock language="typescript" filename="api.ts" code={heroCode} />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="relative border-t bg-card/30">
+        <div className="max-w-6xl mx-auto px-4 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-14"
+          >
+            <h2 className="font-display text-3xl font-bold tracking-tight mb-3">
+              Built for production
+            </h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Everything you need to ship reliable, type-safe API integrations.
+            </p>
+          </motion.div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {features.map((f, i) => (
+              <motion.div
+                key={f.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                className="rounded-xl border bg-card p-5 hover:border-accent/30 transition-colors group"
+              >
+                <div className="h-9 w-9 rounded-lg bg-secondary flex items-center justify-center mb-3 group-hover:bg-accent/10 transition-colors">
+                  <f.icon className="h-4.5 w-4.5 text-foreground group-hover:text-accent transition-colors" />
+                </div>
+                <h3 className="font-display font-semibold text-sm mb-1">{f.title}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Packages */}
+      <section className="border-t">
+        <div className="max-w-6xl mx-auto px-4 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-14"
+          >
+            <h2 className="font-display text-3xl font-bold tracking-tight mb-3">
+              Modular by design
+            </h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Install only what you need. Every adapter is a separate package.
+            </p>
+          </motion.div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-3xl mx-auto">
+            {[
+              { pkg: "@simple-api/core", desc: "Engine & middleware library" },
+              { pkg: "@simple-api/react", desc: "TanStack Query for React" },
+              { pkg: "@simple-api/svelte", desc: "TanStack Query for Svelte" },
+              { pkg: "@simple-api/zustand", desc: "Store synchronization" },
+              { pkg: "@simple-api/react-native", desc: "Mobile-optimized adapter" },
+            ].map((p, i) => (
+              <motion.div
+                key={p.pkg}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
+                className="rounded-lg border bg-card px-4 py-3 flex items-center gap-3"
+              >
+                <div className="h-8 w-8 rounded-md bg-secondary flex items-center justify-center shrink-0">
+                  <Layers className="h-3.5 w-3.5 text-muted-foreground" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-mono text-sm font-medium truncate">{p.pkg}</p>
+                  <p className="text-xs text-muted-foreground">{p.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t py-8">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <div className="h-5 w-5 rounded bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-mono text-[10px] font-bold">S</span>
+            </div>
+            <span>simple-api</span>
+          </div>
+          <p>Built for developers who care about their network layer.</p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default LandingPage;
