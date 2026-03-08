@@ -81,7 +81,7 @@ const LandingPage: React.FC = () => {
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Dither BG */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0" style={{ zIndex: 0 }}>
           <Dither
             waveColor={[0.5, 0.5, 0.5]}
             waveSpeed={0.05}
