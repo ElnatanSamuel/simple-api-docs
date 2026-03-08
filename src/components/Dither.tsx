@@ -236,7 +236,7 @@ export default function Dither({
       mouseRef.current.y = (e.clientY - rect.top) * dpr;
     };
 
-    canvas.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
 
     const startTime = performance.now();
 
@@ -264,7 +264,7 @@ export default function Dither({
 
     return () => {
       cancelAnimationFrame(rafRef.current);
-      canvas.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove);
       ro.disconnect();
       gl.deleteProgram(program);
       gl.deleteShader(vs);
