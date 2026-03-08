@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import ThemeToggle from "./ThemeToggle";
 import DocSidebar from "./DocSidebar";
 import TableOfContents from "./TableOfContents";
+import DocsPrevNext from "./DocsPrevNext";
 
 const DocsLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
