@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import ThemeToggle from "./ThemeToggle";
 import DocSidebar from "./DocSidebar";
 import TableOfContents from "./TableOfContents";
+import DocsPrevNext from "./DocsPrevNext";
 
 const DocsLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -56,6 +57,7 @@ const DocsLayout: React.FC = () => {
           <div className="max-w-6xl mx-auto px-6 py-10 flex gap-10">
             <div className="flex-1 min-w-0 max-w-3xl">
               <Outlet key={location.pathname} />
+              <DocsPrevNext />
             </div>
             <TableOfContents key={location.pathname} />
           </div>
