@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Zap, Shield, Layers, Terminal } from "lucide-react";
@@ -6,7 +6,34 @@ import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
 import CodeBlock from "@/components/CodeBlock";
 
-const Dither = lazy(() => import("@/components/Dither"));
+const HeroBackground: React.FC = () => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const handleMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      el.style.setProperty("--mouse-x", `${x}%`);
+      el.style.setProperty("--mouse-y", `${y}%`);
+    };
+    el.addEventListener("mousemove", handleMove);
+    return () => el.removeEventListener("mousemove", handleMove);
+  }, []);
+
+  return (
+    <div ref={ref} className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 hero-grid" />
+      <div className="absolute inset-0 hero-glow transition-all duration-300" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full hero-gradient-orb animate-float" style={{ background: "hsl(var(--hero-gradient-1) / 0.3)" }} />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full hero-gradient-orb animate-pulse-slow" style={{ background: "hsl(var(--hero-gradient-2) / 0.25)", animationDelay: "2s" }} />
+      <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full hero-gradient-orb animate-float" style={{ background: "hsl(var(--hero-gradient-3) / 0.2)", animationDelay: "4s" }} />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(var(--background)) 80%)" }} />
+    </div>
+  );
+};
 
 const features = [
   {
@@ -76,25 +103,9 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Dither Background - behind content */}
-        <div className="absolute inset-0 pointer-events-none [&_canvas]:!pointer-events-none" style={{ zIndex: 0 }}>
-          <Suspense fallback={<div className="absolute inset-0 bg-background" />}>
-            <Dither
-              waveSpeed={0.03}
-              waveFrequency={3}
-              waveAmplitude={0.3}
-              waveColor={[0.15, 0.25, 0.8]}
-              colorNum={4}
-              pixelSize={3}
-              disableAnimation={false}
-              enableMouseInteraction={false}
-              mouseRadius={0.4}
-            />
-          </Suspense>
-        </div>
-        {/* Content */}
-        <div className="relative max-w-6xl mx-auto px-4 py-20" style={{ zIndex: 1 }}>
+      <section className="relative min-h-[85vh] flex items-center justify-center">
+        <HeroBackground />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
