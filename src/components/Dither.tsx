@@ -264,7 +264,7 @@ export default function Dither({
 
     return () => {
       cancelAnimationFrame(rafRef.current);
-      canvas.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove);
       ro.disconnect();
       gl.deleteProgram(program);
       gl.deleteShader(vs);
