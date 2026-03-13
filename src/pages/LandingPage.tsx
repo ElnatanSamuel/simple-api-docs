@@ -14,13 +14,13 @@ import {
 import { Button } from "@/components/ui/button";
 
 import CodeBlock from "@/components/CodeBlock";
-import Dither from "@/components/Dither";
+import RippleGrid from "@/components/RippleGrid";
 
 const features = [
   {
     icon: Zap,
     title: "Extreme Type Safety",
-    desc: "End-to-end TypeScript inference. No manual casting, ever.",
+    desc: "End to end TypeScript inference. No manual casting, ever.",
   },
   {
     icon: Layers,
@@ -29,13 +29,13 @@ const features = [
   },
   {
     icon: Shield,
-    title: "Built-in Resilience",
+    title: "Built in Resilience",
     desc: "Retries, deduplication, and structured error handling.",
   },
   {
     icon: Terminal,
     title: "Framework Agnostic",
-    desc: "Zero-dependency core. React, Svelte, and RN adapters.",
+    desc: "Zero dependency core. React, Svelte, and RN adapters.",
   },
 ];
 
@@ -72,7 +72,7 @@ const LandingPage: React.FC = () => {
               <img
                 src="/simplewhite.png"
                 alt="simple-api logo"
-                className="h-6 w-6"
+                className="h-9 w-9 object-contain"
               />
               <span className="font-display text-white font-bold text-base">
                 simple-api
@@ -110,15 +110,17 @@ const LandingPage: React.FC = () => {
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Dither BG */}
         <div className="absolute inset-0" style={{ zIndex: 0 }}>
-          <Dither
-            waveColor={[0.5, 0.5, 0.5]}
-            waveSpeed={0.02}
-            waveFrequency={3}
-            waveAmplitude={0.3}
-            colorNum={4}
-            pixelSize={2}
-            enableMouseInteraction={true}
-            mouseRadius={0.35}
+          <RippleGrid
+            gridColor="#eff6ff"
+            rippleIntensity={0.01}
+            gridThickness={7}
+            vignetteStrength={2}
+            glowIntensity={0.01}
+            opacity={0.4}
+            gridRotation={137}
+            mouseInteractionRadius={10}
+            fadeDistance={10}
+            gridSize={10}
           />
           {/* Fade to next section */}
           <div
@@ -155,7 +157,7 @@ const LandingPage: React.FC = () => {
                 className="text-base text-foreground max-w-md mb-10 leading-relaxed"
               >
                 Stop wrestling with raw fetch. simple-api gives you a
-                structured, service-oriented API layer with end-to-end type
+                structured, service oriented API layer with end to end type
                 inference.
               </motion.p>
 
@@ -307,7 +309,7 @@ const LandingPage: React.FC = () => {
             <img
               src="/simplewhite.png"
               alt="simple-api logo"
-              className="h-5 w-auto"
+              className="h-9 w-9 object-contain"
             />
             <span>simple-api</span>
           </div>
