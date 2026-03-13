@@ -26,8 +26,10 @@ const TableOfContents: React.FC = () => {
       elements.forEach((el, index) => {
         const text = el.textContent?.trim() || "";
         const baseId =
-          text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") ||
-          `section-${index + 1}`;
+          text
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "") || `section-${index + 1}`;
 
         const count = idCounts.get(baseId) ?? 0;
         idCounts.set(baseId, count + 1);
@@ -63,28 +65,41 @@ const TableOfContents: React.FC = () => {
 
     const updateActive = () => {
       const viewportHeight = window.innerHeight;
-      const topMargin = 100;
+      const center = viewportHeight / 2;
+      const threshold = viewportHeight * 0.2; // 20% range around the center
 
-      const visible = headingElements
-        .filter((el) => {
-          const rect = el.getBoundingClientRect();
-          return rect.bottom > topMargin && rect.top < viewportHeight;
-        })
-        .map((el) => el.id);
+      // Find all sections and their ranges
+      const sections = headingElements.map((el, i) => {
+        const rect = el.getBoundingClientRect();
+        const nextEl = headingElements[i + 1];
+        const nextRect = nextEl?.getBoundingClientRect();
 
-      if (visible.length > 0) {
-        setIfChanged(visible);
+        // A section starts at its heading and ends at the next heading or end of prose
+        return {
+          id: el.id,
+          top: rect.top,
+          bottom: nextRect
+            ? nextRect.top
+            : document.querySelector(".doc-prose")?.getBoundingClientRect()
+                .bottom || rect.bottom + 1000,
+        };
+      });
+
+      // Find sections that cover the center of the screen
+      const active = sections
+        .filter(
+          (s) => s.top <= center + threshold && s.bottom >= center - threshold,
+        )
+        .map((s) => s.id);
+
+      if (active.length > 0) {
+        setIfChanged(active);
         return;
       }
 
-      // Nothing visible — fall back to latest heading scrolled past
-      const positions = headingElements.map((el) => ({
-        id: el.id,
-        top: el.getBoundingClientRect().top,
-      }));
-
-      const latestAbove = [...positions]
-        .filter(({ top }) => top <= topMargin)
+      // Fallback: newest heading above the threshold
+      const latestAbove = [...sections]
+        .filter((s) => s.top <= center)
         .sort((a, b) => b.top - a.top)[0];
 
       setIfChanged(latestAbove ? [latestAbove.id] : []);
@@ -125,14 +140,16 @@ const TableOfContents: React.FC = () => {
                 href={`#${h.id}`}
                 onClick={(e) => {
                   e.preventDefault();
-                  document.getElementById(h.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  document
+                    .getElementById(h.id)
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
                 className={cn(
                   "block text-[13px] py-0.5 transition-colors border-l -ml-px",
                   h.level === 3 ? "pl-6" : "pl-3",
                   isActive
                     ? "border-accent text-foreground font-medium"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground",
                 )}
               >
                 {h.text}

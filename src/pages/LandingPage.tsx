@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Zap, Shield, Layers, Terminal, Copy, Check, ChevronRight } from "lucide-react";
+import {
+  ArrowRight,
+  Zap,
+  Shield,
+  Layers,
+  Terminal,
+  Copy,
+  Check,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import CodeBlock from "@/components/CodeBlock";
@@ -57,22 +66,41 @@ const LandingPage: React.FC = () => {
     <div className="dark min-h-screen bg-background">
       {/* Nav - floating glassmorphism */}
       <header className="fixed top-0 left-0 right-0 z-50">
-        <div className="max-w-5xl mx-auto mt-4 px-4">
-          <div className="flex items-center justify-between h-12 px-5 rounded-2xl border bg-card/40 backdrop-blur-xl">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-mono font-bold text-[10px]">S</span>
-              </div>
-              <span className="font-display font-bold text-sm">simple-api</span>
+        <div className="max-w-7xl mx-auto mt-4 px-4">
+          <div className="flex items-center justify-between h-12 px-5 rounded-[6px] border bg-card/40 backdrop-blur-xl">
+            <Link to="/" className="flex items-center gap-1">
+              <img
+                src="/simplewhite.png"
+                alt="simple-api logo"
+                className="h-6 w-6"
+              />
+              <span className="font-display text-white font-bold text-base">
+                simple-api
+              </span>
             </Link>
             <div className="flex items-center gap-1">
               <Link to="/docs">
-                <Button variant="ghost" size="sm" className="text-xs h-8">Docs</Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs h-8 text-white"
+                >
+                  Docs
+                </Button>
               </Link>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-                <Button variant="ghost" size="sm" className="text-xs h-8">GitHub</Button>
+              <a
+                href="https://github.com/ElnatanSamuel/simple-api"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs h-8 text-white"
+                >
+                  GitHub
+                </Button>
               </a>
-              
             </div>
           </div>
         </div>
@@ -84,7 +112,7 @@ const LandingPage: React.FC = () => {
         <div className="absolute inset-0" style={{ zIndex: 0 }}>
           <Dither
             waveColor={[0.5, 0.5, 0.5]}
-            waveSpeed={0.05}
+            waveSpeed={0.02}
             waveFrequency={3}
             waveAmplitude={0.3}
             colorNum={4}
@@ -96,7 +124,8 @@ const LandingPage: React.FC = () => {
           <div
             className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none"
             style={{
-              background: "linear-gradient(to bottom, transparent, hsl(var(--background)))",
+              background:
+                "linear-gradient(to bottom, transparent, hsl(var(--background)))",
             }}
           />
         </div>
@@ -110,9 +139,9 @@ const LandingPage: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.95] mb-6"
+                className="font-display text-3xl sm:text-6xl lg:text-5xl font-bold tracking-tighter leading-[0.95] mb-6"
               >
-                <span className="text-muted-foreground">THE TYPE-SAFE</span>
+                <span className="text-foreground">THE TYPE-SAFE</span>
                 <br />
                 <span className="text-foreground">API CLIENT</span>
                 <br />
@@ -123,10 +152,11 @@ const LandingPage: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-                className="text-base text-muted-foreground max-w-md mb-10 leading-relaxed"
+                className="text-base text-foreground max-w-md mb-10 leading-relaxed"
               >
-                Stop wrestling with raw fetch. simple-api gives you a structured,
-                service-oriented API layer with end-to-end type inference.
+                Stop wrestling with raw fetch. simple-api gives you a
+                structured, service-oriented API layer with end-to-end type
+                inference.
               </motion.p>
 
               <motion.div
@@ -136,7 +166,10 @@ const LandingPage: React.FC = () => {
                 className="flex flex-wrap items-center gap-4"
               >
                 <Link to="/docs">
-                  <Button size="lg" className="gap-2 font-medium rounded-full px-8">
+                  <Button
+                    size="sm"
+                    className="gap-2 font-medium rounded-[4px] px-8"
+                  >
                     Get Started
                     <ChevronRight className="h-4 w-4" />
                   </Button>
@@ -144,7 +177,7 @@ const LandingPage: React.FC = () => {
 
                 <button
                   onClick={copyInstall}
-                  className="flex items-center gap-3 px-5 py-2.5 rounded-full border bg-card/40 backdrop-blur-md font-mono text-sm text-muted-foreground hover:text-foreground transition-colors group"
+                  className="flex items-center gap-3 px-5 py-2.5 rounded-[4px] border bg-card backdrop-blur-md font-mono text-sm text-foreground hover:text-foreground transition-colors group"
                 >
                   <span className="text-accent">$</span>
                   <span>npm install @simple-api/core</span>
@@ -164,7 +197,11 @@ const LandingPage: React.FC = () => {
               transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
               className="hidden lg:block"
             >
-              <CodeBlock language="typescript" filename="api.ts" code={heroCode} />
+              <CodeBlock
+                language="typescript"
+                filename="api.ts"
+                code={heroCode}
+              />
             </motion.div>
           </div>
         </div>
@@ -180,10 +217,10 @@ const LandingPage: React.FC = () => {
             transition={{ duration: 0.5 }}
             className="text-center mb-14"
           >
-            <h2 className="font-display text-3xl font-bold tracking-tight mb-3">
+            <h2 className="font-display text-3xl text-white font-bold tracking-tight mb-3">
               Built for production
             </h2>
-            <p className="text-muted-foreground max-w-md mx-auto">
+            <p className="text-foreground max-w-md mx-auto">
               Everything you need to ship reliable, type-safe API integrations.
             </p>
           </motion.div>
@@ -195,13 +232,17 @@ const LandingPage: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="rounded-xl border bg-card p-5 hover:border-accent/30 transition-colors group"
+                className="rounded-[4px] border bg-card p-5 hover:border-accent/30 transition-colors group"
               >
                 <div className="h-9 w-9 rounded-lg bg-secondary flex items-center justify-center mb-3 group-hover:bg-accent/10 transition-colors">
                   <f.icon className="h-4 w-4 text-foreground group-hover:text-accent transition-colors" />
                 </div>
-                <h3 className="font-display font-semibold text-sm mb-1">{f.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
+                <h3 className="font-display text-white font-semibold text-sm mb-1">
+                  {f.title}
+                </h3>
+                <p className="text-xs text-foreground leading-relaxed">
+                  {f.desc}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -218,10 +259,10 @@ const LandingPage: React.FC = () => {
             transition={{ duration: 0.5 }}
             className="text-center mb-14"
           >
-            <h2 className="font-display text-3xl font-bold tracking-tight mb-3">
+            <h2 className="font-display text-white text-3xl font-bold tracking-tight mb-3">
               Modular by design
             </h2>
-            <p className="text-muted-foreground max-w-md mx-auto">
+            <p className="text-foreground max-w-md mx-auto">
               Install only what you need. Every adapter is a separate package.
             </p>
           </motion.div>
@@ -231,7 +272,10 @@ const LandingPage: React.FC = () => {
               { pkg: "@simple-api/react", desc: "TanStack Query for React" },
               { pkg: "@simple-api/svelte", desc: "TanStack Query for Svelte" },
               { pkg: "@simple-api/zustand", desc: "Store synchronization" },
-              { pkg: "@simple-api/react-native", desc: "Mobile-optimized adapter" },
+              {
+                pkg: "@simple-api/react-native",
+                desc: "Mobile-optimized adapter",
+              },
             ].map((p, i) => (
               <motion.div
                 key={p.pkg}
@@ -245,8 +289,10 @@ const LandingPage: React.FC = () => {
                   <Layers className="h-3.5 w-3.5 text-muted-foreground" />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-mono text-sm font-medium truncate">{p.pkg}</p>
-                  <p className="text-xs text-muted-foreground">{p.desc}</p>
+                  <p className="font-mono text-white text-sm font-medium truncate">
+                    {p.pkg}
+                  </p>
+                  <p className="text-xs text-foreground">{p.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -256,11 +302,13 @@ const LandingPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="border-t py-8">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <div className="h-5 w-5 rounded bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-mono text-[10px] font-bold">S</span>
-            </div>
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white">
+          <div className="flex items-center gap-1">
+            <img
+              src="/simplewhite.png"
+              alt="simple-api logo"
+              className="h-5 w-auto"
+            />
             <span>simple-api</span>
           </div>
           <p>Built for developers who care about their network layer.</p>

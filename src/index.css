@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -123,17 +123,23 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: "Inter", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Space Grotesk", system-ui, sans-serif;
   }
 
-  code, pre {
-    font-family: 'JetBrains Mono', monospace;
+  code,
+  pre {
+    font-family: "JetBrains Mono", monospace;
   }
 }
 
@@ -156,14 +162,34 @@
     color: hsl(var(--muted-foreground));
   }
 
-  .token-keyword { color: hsl(var(--code-keyword)); font-weight: 600; }
-  .token-string { color: hsl(var(--code-string)); }
-  .token-comment { color: hsl(var(--code-comment)); font-style: italic; }
-  .token-function { color: hsl(var(--code-function)); }
-  .token-number { color: hsl(var(--code-number)); }
-  .token-property { color: hsl(var(--code-property)); }
-  .token-line-number { color: hsl(var(--code-comment)); opacity: 0.5; }
-  .token-prompt { color: hsl(var(--code-string)); font-weight: 600; }
+  .token-keyword {
+    color: hsl(var(--code-keyword));
+    font-weight: 600;
+  }
+  .token-string {
+    color: hsl(var(--code-string));
+  }
+  .token-comment {
+    color: hsl(var(--code-comment));
+    font-style: italic;
+  }
+  .token-function {
+    color: hsl(var(--code-function));
+  }
+  .token-number {
+    color: hsl(var(--code-number));
+  }
+  .token-property {
+    color: hsl(var(--code-property));
+  }
+  .token-line-number {
+    color: hsl(var(--code-comment));
+    opacity: 0.5;
+  }
+  .token-prompt {
+    color: hsl(var(--code-string));
+    font-weight: 600;
+  }
 
   .code-terminal .code-header {
     border-bottom-color: hsl(var(--code-border));
@@ -174,21 +200,25 @@
 
   .doc-prose h1 {
     @apply text-3xl font-bold tracking-tight mb-2;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: "Space Grotesk", system-ui, sans-serif;
   }
   .doc-prose h2 {
     @apply text-xl font-semibold tracking-tight mt-10 mb-4 pb-2 border-b;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: "Space Grotesk", system-ui, sans-serif;
   }
   .doc-prose h3 {
     @apply text-lg font-semibold mt-6 mb-3;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: "Space Grotesk", system-ui, sans-serif;
   }
   .doc-prose p {
     @apply leading-7 mb-4;
     color: hsl(var(--muted-foreground));
   }
-  .doc-prose ul, .doc-prose ol {
+  .dark .doc-prose p {
+    @apply text-white;
+  }
+  .doc-prose ul,
+  .doc-prose ol {
     @apply list-disc list-inside mb-4 space-y-1;
     color: hsl(var(--muted-foreground));
   }
@@ -216,8 +246,16 @@
   .hero-grid {
     background-size: 40px 40px;
     background-image:
-      linear-gradient(to right, hsl(var(--grid-color) / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(var(--grid-color) / 0.05) 1px, transparent 1px);
+      linear-gradient(
+        to right,
+        hsl(var(--grid-color) / 0.05) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        hsl(var(--grid-color) / 0.05) 1px,
+        transparent 1px
+      );
   }
 
   .hero-glow {
