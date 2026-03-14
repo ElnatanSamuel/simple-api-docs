@@ -5,6 +5,7 @@ interface CodeBlockProps {
   code: string;
   language?: string;
   filename?: string;
+  className?: string;
 }
 
 interface Token {
@@ -13,11 +14,46 @@ interface Token {
 }
 
 const KEYWORDS = new Set([
-  "const", "let", "var", "function", "return", "import", "from", "export",
-  "default", "if", "else", "for", "while", "new", "async", "await",
-  "try", "catch", "type", "interface", "extends", "implements", "enum",
-  "class", "throw", "of", "in", "true", "false", "null", "undefined",
-  "npm", "npx", "yarn", "pnpm", "bun", "cd", "mkdir", "install", "add",
+  "const",
+  "let",
+  "var",
+  "function",
+  "return",
+  "import",
+  "from",
+  "export",
+  "default",
+  "if",
+  "else",
+  "for",
+  "while",
+  "new",
+  "async",
+  "await",
+  "try",
+  "catch",
+  "type",
+  "interface",
+  "extends",
+  "implements",
+  "enum",
+  "class",
+  "throw",
+  "of",
+  "in",
+  "true",
+  "false",
+  "null",
+  "undefined",
+  "npm",
+  "npx",
+  "yarn",
+  "pnpm",
+  "bun",
+  "cd",
+  "mkdir",
+  "install",
+  "add",
 ]);
 
 const tokenizeLine = (line: string): Token[] => {
@@ -35,7 +71,10 @@ const tokenizeLine = (line: string): Token[] => {
       while ((match = wordRegex.exec(buf)) !== null) {
         // Add any gap before this match
         if (match.index > lastIndex) {
-          tokens.push({ text: buf.slice(lastIndex, match.index), type: "plain" });
+          tokens.push({
+            text: buf.slice(lastIndex, match.index),
+            type: "plain",
+          });
         }
         const word = match[0];
         if (KEYWORDS.has(word)) {
@@ -98,7 +137,9 @@ const tokenizeLine = (line: string): Token[] => {
 };
 
 const isTerminal = (language?: string) =>
-  ["bash", "sh", "shell", "terminal", "zsh"].includes(language?.toLowerCase() ?? "");
+  ["bash", "sh", "shell", "terminal", "zsh"].includes(
+    language?.toLowerCase() ?? "",
+  );
 
 const TokenSpan: React.FC<{ token: Token }> = ({ token }) => {
   const classMap: Record<string, string> = {
@@ -115,7 +156,12 @@ const TokenSpan: React.FC<{ token: Token }> = ({ token }) => {
   return <>{token.text}</>;
 };
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = "typescript", filename }) => {
+const CodeBlock: React.FC<CodeBlockProps> = ({
+  code,
+  language = "typescript",
+  filename,
+  className = "",
+}) => {
   const [copied, setCopied] = useState(false);
   const terminal = isTerminal(language);
 
@@ -128,17 +174,23 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = "typescript", fi
   const lines = code.split("\n");
 
   return (
-    <div className={`code-block my-4 ${terminal ? "code-terminal" : ""}`}>
+    <div
+      className={`code-block my-4 ${terminal ? "code-terminal" : ""} ${className}`}
+    >
       <div className="code-header">
         <div className="flex items-center gap-2">
-          {terminal && <Terminal className="h-3.5 w-3.5 opacity-60" />}
+          {terminal && <Terminal className="text-white h-3.5 w-3.5" />}
           <span>{filename || language}</span>
         </div>
         <button
           onClick={handleCopy}
           className="flex items-center gap-1 hover:opacity-70 transition-opacity"
         >
-          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? (
+            <Check className="h-3.5 w-3.5" />
+          ) : (
+            <Copy className="h-3.5 w-3.5" />
+          )}
           <span>{copied ? "Copied" : "Copy"}</span>
         </button>
       </div>
@@ -149,15 +201,19 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = "typescript", fi
             return (
               <div key={i} className="flex">
                 {!terminal && (
-                  <span className="token-line-number select-none inline-block w-8 text-right mr-4 shrink-0">
+                  <span className="token-line-number text-white  select-none inline-block w-8 text-right mr-4 shrink-0">
                     {i + 1}
                   </span>
                 )}
                 {terminal && (
-                  <span className="token-prompt select-none inline-block mr-3 shrink-0">$</span>
+                  <span className="token-prompt select-none inline-block mr-3 shrink-0">
+                    $
+                  </span>
                 )}
                 <span>
-                  {tokens.length > 0 ? tokens.map((t, j) => <TokenSpan key={j} token={t} />) : " "}
+                  {tokens.length > 0
+                    ? tokens.map((t, j) => <TokenSpan key={j} token={t} />)
+                    : " "}
                 </span>
               </div>
             );

@@ -1,6 +1,13 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { ChevronRight, BookOpen, Zap, FileCode, Layers, Terminal } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import {
+  ChevronRight,
+  BookOpen,
+  Zap,
+  FileCode,
+  Layers,
+  Terminal,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -31,6 +38,7 @@ const navigation: NavGroup[] = [
       { title: "Create API", href: "/docs/core/create-api" },
       { title: "Middleware", href: "/docs/core/middleware" },
       { title: "API Error", href: "/docs/core/api-error" },
+      { title: "Interceptors", href: "/docs/core/interceptors" },
     ],
   },
   {
@@ -40,6 +48,7 @@ const navigation: NavGroup[] = [
       { title: "React", href: "/docs/adapters/react" },
       { title: "Svelte", href: "/docs/adapters/svelte" },
       { title: "React Native", href: "/docs/adapters/react-native" },
+      { title: "Offline Queue", href: "/docs/adapters/offline-queue" },
     ],
   },
   {
@@ -58,8 +67,16 @@ const navigation: NavGroup[] = [
     icon: FileCode,
     items: [
       { title: "Type Inference", href: "/docs/advanced/type-inference" },
-      { title: "Request Deduplication", href: "/docs/advanced/request-deduplication" },
+      {
+        title: "Request Deduplication",
+        href: "/docs/advanced/request-deduplication",
+      },
       { title: "Structured Errors", href: "/docs/advanced/structured-errors" },
+      { title: "CLI Tools", href: "/docs/advanced/cli-tools" },
+      { title: "File Uploads", href: "/docs/advanced/file-uploads" },
+      { title: "Pagination", href: "/docs/advanced/pagination" },
+      { title: "Polling", href: "/docs/advanced/polling" },
+      { title: "PWA Caching", href: "/docs/advanced/pwa-caching" },
     ],
   },
 ];
@@ -70,13 +87,24 @@ interface DocSidebarProps {
 }
 
 const DocSidebar: React.FC<DocSidebarProps> = ({ isOpen, onToggle }) => {
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(
-    navigation.map((g) => g.label)
-  );
+  const { pathname } = useLocation();
+  const [expandedGroups, setExpandedGroups] = useState<string[]>([
+    "Getting Started",
+  ]);
+
+  useEffect(() => {
+    // Find which group contains the current pathname
+    const activeGroup = navigation.find((group) =>
+      group.items.some((item) => item.href === pathname),
+    );
+    if (activeGroup && !expandedGroups.includes(activeGroup.label)) {
+      setExpandedGroups((prev) => [...prev, activeGroup.label]);
+    }
+  }, [pathname]);
 
   const toggleGroup = (label: string) => {
     setExpandedGroups((prev) =>
-      prev.includes(label) ? prev.filter((g) => g !== label) : [...prev, label]
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
     );
   };
 
@@ -91,7 +119,7 @@ const DocSidebar: React.FC<DocSidebarProps> = ({ isOpen, onToggle }) => {
       <aside
         className={cn(
           "fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-60 border-r bg-sidebar overflow-y-auto transition-transform duration-200 lg:sticky lg:top-14 lg:translate-x-0 lg:shrink-0",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="p-3 space-y-0.5">
@@ -107,7 +135,7 @@ const DocSidebar: React.FC<DocSidebarProps> = ({ isOpen, onToggle }) => {
                   <ChevronRight
                     className={cn(
                       "h-3 w-3 mr-1 transition-transform duration-150",
-                      isExpanded && "rotate-90"
+                      isExpanded && "rotate-90",
                     )}
                   />
                   <Icon className="h-3 w-3 mr-1.5 opacity-60" />
@@ -125,10 +153,12 @@ const DocSidebar: React.FC<DocSidebarProps> = ({ isOpen, onToggle }) => {
                             "block px-2 py-1 text-[13px] rounded-md transition-colors",
                             isActive
                               ? "bg-accent/10 font-medium"
-                              : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                              : "text-muted-foreground hover:text-foreground hover:bg-muted",
                           )
                         }
-                        style={({ isActive }) => isActive ? { color: "hsl(var(--accent))" } : {}}
+                        style={({ isActive }) =>
+                          isActive ? { color: "hsl(var(--accent))" } : {}
+                        }
                         onClick={() => {
                           if (window.innerWidth < 1024) onToggle();
                         }}

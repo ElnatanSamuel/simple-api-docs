@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import DocsLayout from "./components/DocsLayout";
+import ScrollToTop from "./components/ScrollToTop";
 import IntroductionPage from "./pages/docs/IntroductionPage";
 import InstallationPage from "./pages/docs/InstallationPage";
 import GettingStartedPage from "./pages/docs/GettingStartedPage";
@@ -22,6 +23,13 @@ import ZustandPage from "./pages/docs/ZustandPage";
 import TypeInferencePage from "./pages/docs/TypeInferencePage";
 import RequestDeduplicationPage from "./pages/docs/RequestDeduplicationPage";
 import StructuredErrorsPage from "./pages/docs/StructuredErrorsPage";
+import InterceptorsPage from "./pages/docs/InterceptorsPage";
+import CliToolsPage from "./pages/docs/CliToolsPage";
+import FileUploadsPage from "./pages/docs/FileUploadsPage";
+import PaginationPage from "./pages/docs/PaginationPage";
+import PollingPage from "./pages/docs/PollingPage";
+import PwaCachingPage from "./pages/docs/PwaCachingPage";
+import OfflineQueuePage from "./pages/docs/OfflineQueuePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +40,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/docs" element={<DocsLayout />}>
@@ -42,20 +51,42 @@ const App = () => (
             <Route path="core/create-api" element={<CreateApiPage />} />
             <Route path="core/middleware" element={<MiddlewarePage />} />
             <Route path="core/api-error" element={<ApiErrorPage />} />
+            <Route path="core/interceptors" element={<InterceptorsPage />} />
             {/* Adapters */}
             <Route path="adapters/react" element={<ReactAdapterPage />} />
             <Route path="adapters/svelte" element={<SvelteAdapterPage />} />
             <Route path="adapters/react-native" element={<ReactNativePage />} />
+            <Route
+              path="adapters/offline-queue"
+              element={<OfflineQueuePage />}
+            />
             {/* Middleware Library */}
             <Route path="middleware/logger" element={<LoggerPage />} />
             <Route path="middleware/mock" element={<MockPage />} />
             <Route path="middleware/retry" element={<RetryPage />} />
-            <Route path="middleware/transformer" element={<TransformerPage />} />
+            <Route
+              path="middleware/transformer"
+              element={<TransformerPage />}
+            />
             <Route path="middleware/zustand" element={<ZustandPage />} />
             {/* Advanced */}
-            <Route path="advanced/type-inference" element={<TypeInferencePage />} />
-            <Route path="advanced/request-deduplication" element={<RequestDeduplicationPage />} />
-            <Route path="advanced/structured-errors" element={<StructuredErrorsPage />} />
+            <Route
+              path="advanced/type-inference"
+              element={<TypeInferencePage />}
+            />
+            <Route
+              path="advanced/request-deduplication"
+              element={<RequestDeduplicationPage />}
+            />
+            <Route
+              path="advanced/structured-errors"
+              element={<StructuredErrorsPage />}
+            />
+            <Route path="advanced/cli-tools" element={<CliToolsPage />} />
+            <Route path="advanced/file-uploads" element={<FileUploadsPage />} />
+            <Route path="advanced/pagination" element={<PaginationPage />} />
+            <Route path="advanced/polling" element={<PollingPage />} />
+            <Route path="advanced/pwa-caching" element={<PwaCachingPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

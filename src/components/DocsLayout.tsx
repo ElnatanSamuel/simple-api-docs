@@ -39,6 +39,7 @@ const searchIndex = [
       { title: "Create API", path: "/docs/core/create-api", icon: FileText },
       { title: "Middleware", path: "/docs/core/middleware", icon: Shield },
       { title: "API Error", path: "/docs/core/api-error", icon: Terminal },
+      { title: "Interceptors", path: "/docs/core/interceptors", icon: Zap },
     ],
   },
   {
@@ -50,6 +51,11 @@ const searchIndex = [
         title: "React Native Adapter",
         path: "/docs/adapters/react-native",
         icon: Layers,
+      },
+      {
+        title: "Offline Queue",
+        path: "/docs/adapters/offline-queue",
+        icon: Shield,
       },
     ],
   },
@@ -84,6 +90,19 @@ const searchIndex = [
         title: "Structured Errors",
         path: "/docs/advanced/structured-errors",
         icon: Terminal,
+      },
+      { title: "CLI Tools", path: "/docs/advanced/cli-tools", icon: Terminal },
+      {
+        title: "File Uploads",
+        path: "/docs/advanced/file-uploads",
+        icon: FileText,
+      },
+      { title: "Pagination", path: "/docs/advanced/pagination", icon: Layers },
+      { title: "Polling", path: "/docs/advanced/polling", icon: Zap },
+      {
+        title: "PWA Caching",
+        path: "/docs/advanced/pwa-caching",
+        icon: Shield,
       },
     ],
   },
@@ -195,12 +214,16 @@ const DocsLayout: React.FC = () => {
           onToggle={() => setSidebarOpen(false)}
         />
         <main className="flex-1 min-w-0">
-          <div className="max-w-6xl mx-auto px-6 py-10 flex gap-10">
-            <div className="flex-1 min-w-0 max-w-3xl">
+          <div className="flex justify-between px-4 py-10 w-full min-h-[calc(100vh-3.5rem)]">
+            <div className="flex-1 min-w-0 max-w-3xl lg:ml-8">
               <Outlet key={location.pathname} />
               <DocsPrevNext />
             </div>
-            <TableOfContents key={location.pathname} />
+            <div className="hidden xl:block w-64 shrink-0 pr-6">
+              <div className="sticky top-24">
+                <TableOfContents key={location.pathname} />
+              </div>
+            </div>
           </div>
         </main>
       </div>
