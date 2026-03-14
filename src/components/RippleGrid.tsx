@@ -213,10 +213,12 @@ void main() {
     };
 
     window.addEventListener("resize", resize);
-    if (mouseInteraction && containerRef.current) {
-      containerRef.current.addEventListener("mousemove", handleMouseMove);
-      containerRef.current.addEventListener("mouseenter", handleMouseEnter);
-      containerRef.current.addEventListener("mouseleave", handleMouseLeave);
+    if (mouseInteraction) {
+      window.addEventListener("mousemove", handleMouseMove);
+      // We'll keep influence simple: if mouse moves, it's active.
+      // Or we can check if it's over the container in the mousemove handler.
+      window.addEventListener("mouseover", handleMouseEnter);
+      window.addEventListener("mouseout", handleMouseLeave);
     }
     resize();
 
@@ -250,10 +252,10 @@ void main() {
     return () => {
       cancelAnimationFrame(animFrame);
       window.removeEventListener("resize", resize);
-      if (mouseInteraction && container) {
-        container.removeEventListener("mousemove", handleMouseMove);
-        container.removeEventListener("mouseenter", handleMouseEnter);
-        container.removeEventListener("mouseleave", handleMouseLeave);
+      if (mouseInteraction) {
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mouseover", handleMouseEnter);
+        window.removeEventListener("mouseout", handleMouseLeave);
       }
       renderer.gl.getExtension("WEBGL_lose_context")?.loseContext();
       if (container.contains(gl.canvas)) container.removeChild(gl.canvas);

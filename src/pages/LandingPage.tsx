@@ -134,7 +134,7 @@ const LandingPage: React.FC = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-xs h-8 text-white"
+                  className="text-xs rounded-none h-8 text-white"
                 >
                   Docs
                 </Button>
@@ -147,7 +147,7 @@ const LandingPage: React.FC = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-xs h-8 text-white"
+                  className="text-xs rounded-none h-8 text-white"
                 >
                   GitHub
                 </Button>
@@ -169,7 +169,7 @@ const LandingPage: React.FC = () => {
             glowIntensity={0.01}
             opacity={0.4}
             gridRotation={137}
-            mouseInteractionRadius={10}
+            mouseInteractionRadius={1}
             fadeDistance={10}
             gridSize={10}
           />
